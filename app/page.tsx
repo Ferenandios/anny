@@ -1,5 +1,11 @@
+import Todo from "./components/Todo/Todo";
+
 const Page = () => {
-  return <div className="bg-lime-200">works!</div>;
+  return (
+    <>
+      <Todo />
+    </>
+  );
 };
 
 export default Page;
