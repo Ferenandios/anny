@@ -4,18 +4,20 @@ import Image from "next/image";
 import { FC, useRef, useState, KeyboardEvent } from "react";
 import deleteIcon from "@/public/banana rum.svg";
 import addIcon from "@/public/gymbag.svg";
+import clsx from "clsx";
 
 interface ITodo {
   id: number;
   text: string;
+  isLucky: boolean;
 }
 
 const Todo: FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [todos, setTodos] = useState<ITodo[]>([
-    { id: 0, text: "Make an app!" },
-    { id: 1, text: "Learn TypeScript" },
-    { id: 2, text: "Drink coffee" },
+    { id: 0, text: "Make an app!", isLucky: true },
+    { id: 1, text: "Learn TypeScript", isLucky: false },
+    { id: 2, text: "Drink coffee", isLucky: false },
   ]);
   // Delete todo from the state by todo.id
   const deleteTodo = (currentId: number) => {
@@ -33,6 +35,7 @@ const Todo: FC = () => {
     const newTodo: ITodo = {
       id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 0,
       text: inputValue,
+      isLucky: getRandomNumber() === 3,
     };
     setTodos([...todos, newTodo]);
     // Clear the input
@@ -45,6 +48,12 @@ const Todo: FC = () => {
     if (event.key !== "Enter") return;
     addTodo();
   };
+  // RNG for Todo background
+  const getRandomNumber: () => number = () => {
+    const range = 10; // 0 — 10
+    return Math.floor(Math.random() * (range + 1));
+  };
+
   return (
     <>
       {/* flex justify-center items-center w-[100vw] h-[100vh]
@@ -68,7 +77,11 @@ const Todo: FC = () => {
                 {todos.map((todo) => (
                   <li
                     key={todo.id}
-                    className="flex items-center w-full min-h-[50px] bg-gray-200 rounded-2xl mb-[15px] p-[10px]"
+                    className={clsx(
+                      `flex items-center w-full min-h-[50px] ${
+                        todo.isLucky ? "bg-yellow-200" : "bg-gray-200"
+                      } rounded-2xl mb-[15px] p-[10px]`
+                    )}
                   >
                     <button
                       onClick={() => deleteTodo(todo.id)}
@@ -105,7 +118,7 @@ const Todo: FC = () => {
           <div className="flex items-center w-full h-[80px] px-[10px]">
             <button
               onClick={() => addTodo()}
-              className="flex justify-center items-center w-[50px] h-[50px] bg-gray-200 rounded-2xl"
+              className="cursor-pointer flex justify-center items-center w-[50px] h-[50px] bg-gray-200 rounded-2xl"
             >
               <Image alt="Add" src={addIcon} width={30} height={30} />
             </button>
